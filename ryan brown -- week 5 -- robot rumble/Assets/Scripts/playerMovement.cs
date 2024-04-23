@@ -6,7 +6,10 @@ public class playerMovement : MonoBehaviour
 {
     Rigidbody rb;
     public float speed = 5f;
+    public float ramImpulse = 10f;
     public float maxSpeed = 10f;
+    float timer;
+    bool canBoost = true;
     public Transform focalPoint;
     public float animationSpeedThreshold = 1f;
     Animator _animator;
@@ -26,6 +29,24 @@ public class playerMovement : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         rb.AddForce(focalPoint.forward * speed * forwardInput);
         rb.AddForce(focalPoint.right * speed * horizontalInput);
+
+        if (Input.GetMouseButtonDown(0) && canBoost == true)
+        {
+            rb.AddForce(focalPoint.forward * ramImpulse * forwardInput, ForceMode.Impulse);
+            rb.AddForce(focalPoint.right * ramImpulse * horizontalInput, ForceMode.Impulse);
+            canBoost = false;
+        }
+        
+        if(canBoost == false)
+        {
+            timer += Time.deltaTime;
+            if (timer >= 1)
+            {
+                timer = 0;
+                canBoost = true;
+            }
+        }
+
 
         if(Mathf.Abs(rb.velocity.x) > animationSpeedThreshold || Mathf.Abs(rb.velocity.z) > animationSpeedThreshold)
         {
