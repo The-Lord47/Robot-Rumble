@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3352934}
   - component: {fileID: 2331524}
   m_Layer: 0
-  m_Name: PowerIcon
+  m_Name: ramBoostPowerup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

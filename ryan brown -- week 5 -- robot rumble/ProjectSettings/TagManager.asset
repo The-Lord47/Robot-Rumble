@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - enemySpawner
+  - ramBoost
+  - enemy
+  - shield
+  - powerupSpawner
+  - missileIcon
+  - missile
   layers:
   - Default
   - TransparentFX

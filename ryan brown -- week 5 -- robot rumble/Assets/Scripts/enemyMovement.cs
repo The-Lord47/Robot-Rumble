@@ -10,11 +10,13 @@ public class enemyMovement : MonoBehaviour
     Animator _anim;
 
     private spawnManager _enemySpawnerScript;
+    private playerMovement _playerScript;
 
     // Start is called before the first frame update
     void Start()
     {
         _enemySpawnerScript = GameObject.FindGameObjectWithTag("enemySpawner").GetComponent<spawnManager>();
+        _playerScript = GameObject.FindGameObjectWithTag("Player").GetComponentInParent<playerMovement>();
 
         rb = GetComponent<Rigidbody>();
         player = GameObject.FindGameObjectWithTag("Player");
@@ -39,5 +41,19 @@ public class enemyMovement : MonoBehaviour
             _enemySpawnerScript.spawnCount--;
             Destroy(gameObject);
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if((collision.gameObject.CompareTag("Player") && _playerScript.hasShield) || collision.gameObject.CompareTag("missile"))
+        {
+            StartCoroutine(throttleEnemyMaxVelocity());
+        }
+    }
+
+    IEnumerator throttleEnemyMaxVelocity()
+    {
+        yield return new WaitForSeconds(2);
+        rb.maxLinearVelocity = 8;
     }
 }
