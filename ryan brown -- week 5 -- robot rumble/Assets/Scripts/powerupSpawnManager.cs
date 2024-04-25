@@ -4,27 +4,42 @@ using UnityEngine;
 
 public class powerupSpawnManager : MonoBehaviour
 {
-
+    //----------------------PUBLIC VARIABLES----------------------
+    [Header("Object References")]
     public GameObject[] powerups;
-    public float spawnRange = 9;
+    //----------------------PRIVATE VARIABLES----------------------
+    float spawnRange = 9;
+    int powerUpCount;
+    playerMovement _playerScript;
 
-    // Start is called before the first frame update
+    //----------------------START----------------------
     void Start()
     {
-        InvokeRepeating("Spawner", 2, 10);
+        //----------------------REFERENCES----------------------
+        _playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<playerMovement>();
     }
 
-    // Update is called once per frame
+    //----------------------UPDATE----------------------
     void Update()
     {
-        
+        //----------------------POWERUP SPAWNER----------------------
+        //finds any powerups currently on the field
+        powerUpCount = FindObjectsOfType<powerupRotation>().Length;
+
+        //checks if there is currently a powerup on the field
+        if (_playerScript.hasMissile == false && _playerScript.hasShield == false && powerUpCount == 0)
+        {
+            Spawner();
+        }
     }
 
+    //----------------------SPAWN FUNCTION----------------------
     void Spawner()
     {
         Instantiate(powerups[Random.Range(0, powerups.Length)], SpawnPos(), transform.rotation, transform);
     }
 
+    //----------------------SPAWN POSITION RANDOMISER----------------------
     Vector3 SpawnPos()
     {
         float spawnPosX = Random.Range(-spawnRange, spawnRange);

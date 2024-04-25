@@ -11,6 +11,7 @@ TagManager:
   - powerupSpawner
   - missileIcon
   - missile
+  - UIManager
   layers:
   - Default
   - TransparentFX
