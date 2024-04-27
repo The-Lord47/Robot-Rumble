@@ -12,6 +12,7 @@ public class playerMovement : MonoBehaviour
     [Header("Object References")]
     public Transform focalPoint;
     public GameObject shieldIndicator;
+    public GameObject missileIndicator;
     public GameObject missilePrefab;
     public Transform missiles;
     [Header("Animation")]
@@ -21,11 +22,11 @@ public class playerMovement : MonoBehaviour
     public bool hasMissile;
     public float shieldStrength = 20f;
     public int lives = 3;
+    public float timer;
 
     //----------------------PRIVATE VARIABLES----------------------
     Animator _animator;
     Rigidbody rb;
-    float timer;
     bool canBoost = true;
 
     //----------------------START----------------------
@@ -100,10 +101,13 @@ public class playerMovement : MonoBehaviour
             Instantiate(missilePrefab, transform.position + new Vector3(1, 0, -1).normalized, Quaternion.Euler(0, 135, 0), missiles);
         }
 
-        //----------------------SHIELD SYSTEM----------------------
+        //----------------------POWERUP INDICATOR SYSTEM----------------------
         shieldIndicator.SetActive(hasShield);
         shieldIndicator.transform.position = transform.position;
         shieldIndicator.transform.rotation = transform.rotation;
+
+        missileIndicator.SetActive(hasMissile);
+        missileIndicator.transform.position = transform.position;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -121,6 +125,15 @@ public class playerMovement : MonoBehaviour
             hasMissile = true;
             Destroy(other.gameObject);
             StartCoroutine(missileCooldown());
+        }
+        //----------------------REPAIR PICKUP----------------------
+        if (other.CompareTag("repair"))
+        {
+            if(lives < 3)
+            {
+                ++lives;
+            }
+            Destroy(other.gameObject);
         }
     }
 

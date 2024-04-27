@@ -14,6 +14,7 @@ public class enemyMovement : MonoBehaviour
 
     //----------------------PUBLIC VARIABLES----------------------
     public float moveForce;
+    public bool moveDisabled;
 
     //----------------------START----------------------
     void Start()
@@ -37,8 +38,11 @@ public class enemyMovement : MonoBehaviour
         //gets a vector from the enemy to the player
         Vector3 player_enemy_vector = player.transform.position - transform.position;
 
-        //adds force in the direction of the player
-        rb.AddForce(player_enemy_vector.normalized * moveForce);
+        if (!moveDisabled)
+        {
+            //adds force in the direction of the player
+            rb.AddForce(player_enemy_vector.normalized * moveForce);
+        }
 
         //----------------------ANIMATIONS----------------------
         _anim.SetFloat("anim_run_speed", rb.velocity.magnitude);
@@ -60,6 +64,7 @@ public class enemyMovement : MonoBehaviour
     {
         if((collision.gameObject.CompareTag("Player") && _playerScript.hasShield) || collision.gameObject.CompareTag("missile"))
         {
+            moveDisabled = true;
             StartCoroutine(throttleEnemyMaxVelocity());
         }
     }
@@ -68,5 +73,6 @@ public class enemyMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         rb.maxLinearVelocity = 8;
+        moveDisabled = false;
     }
 }

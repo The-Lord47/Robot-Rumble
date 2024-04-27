@@ -12,6 +12,7 @@ TagManager:
   - missileIcon
   - missile
   - UIManager
+  - repair
   layers:
   - Default
   - TransparentFX
