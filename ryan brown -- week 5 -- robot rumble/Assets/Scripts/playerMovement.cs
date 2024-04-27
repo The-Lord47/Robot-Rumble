@@ -9,14 +9,26 @@ public class playerMovement : MonoBehaviour
     public float speed = 5f;
     public float ramImpulse = 10f;
     public float maxSpeed = 10f;
+
     [Header("Object References")]
     public Transform focalPoint;
     public GameObject shieldIndicator;
     public GameObject missileIndicator;
     public GameObject missilePrefab;
     public Transform missiles;
+
     [Header("Animation")]
     public float animationSpeedThreshold = 1f;
+
+    [Header("SFX")]
+    public GameObject musicStart;
+    public GameObject musicLoop;
+    public GameObject clashSFX;
+    public GameObject gunSFX;
+    public GameObject shieldReverb;
+    public AudioClip[] clashSFXs;
+    public AudioClip gunClip;
+    
     [Header("Passable Variables")]
     public bool hasShield;
     public bool hasMissile;
@@ -95,6 +107,7 @@ public class playerMovement : MonoBehaviour
         //----------------------MISSILE SPAWNING SYSTEM----------------------
         if (Input.GetKeyDown(KeyCode.Space) && hasMissile == true)
         {
+            gunSFX.GetComponent<AudioSource>().PlayOneShot(gunClip);
             Instantiate(missilePrefab, transform.position + new Vector3(1, 0, 1).normalized, Quaternion.Euler(0, 45, 0), missiles);
             Instantiate(missilePrefab, transform.position + new Vector3(-1, 0, 1).normalized, Quaternion.Euler(0, -45, 0), missiles);
             Instantiate(missilePrefab, transform.position + new Vector3(-1, 0, -1).normalized, Quaternion.Euler(0, -135, 0), missiles);
@@ -116,8 +129,11 @@ public class playerMovement : MonoBehaviour
         if (other.CompareTag("shield"))
         {
             hasShield = true;
+            clashSFX.GetComponent<AudioLowPassFilter>().enabled = true;
+            musicStart.GetComponent<AudioLowPassFilter>().enabled = true;
+            musicLoop.GetComponent<AudioLowPassFilter>().enabled = true;
             Destroy(other.gameObject);
-            StartCoroutine(ramBoostCooldown());
+            StartCoroutine(shieldCooldown());
         }
         //----------------------MISSILE PICKUP----------------------
         if (other.CompareTag("missileIcon"))
@@ -139,6 +155,11 @@ public class playerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //----------------------ENEMY COLLISION----------------------
+        if (collision.gameObject.CompareTag("enemy"))
+        {
+            clashSFX.GetComponent<AudioSource>().PlayOneShot(clashSFXs[Random.Range(0, clashSFXs.Length)]);
+        }
         //----------------------ENEMY COLLISION W/ SHIELD----------------------
         if (collision.gameObject.CompareTag("enemy") && hasShield)
         {
@@ -150,10 +171,14 @@ public class playerMovement : MonoBehaviour
     }
 
     //----------------------POWERUP COOLDOWNS----------------------
-    IEnumerator ramBoostCooldown()
+    IEnumerator shieldCooldown()
     {
         yield return new WaitForSeconds(5);
         hasShield = false;
+        clashSFX.GetComponent<AudioLowPassFilter>().enabled = false;
+        musicStart.GetComponent<AudioLowPassFilter>().enabled = false;
+        musicLoop.GetComponent<AudioLowPassFilter>().enabled = false;
+        //shieldReverb.SetActive(false);
     }
 
     IEnumerator missileCooldown()
