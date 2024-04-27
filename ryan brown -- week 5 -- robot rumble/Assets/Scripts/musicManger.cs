@@ -22,7 +22,7 @@ public class musicManger : MonoBehaviour
 
     IEnumerator changeTrack()
     {
-        yield return new WaitForSeconds(14.965f);
+        yield return new WaitForSeconds(15.765f);
         musicLoop.GetComponent<AudioSource>().Play();
     }
 }

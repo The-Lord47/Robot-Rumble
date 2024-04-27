@@ -5,8 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class playAgainButton : MonoBehaviour
 {
-
-    // Update is called once per frame
     public void OnButtonPress()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
